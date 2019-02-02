@@ -19,16 +19,16 @@ class sale_order_discount(models.Model):
     
     discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')])
     discount_amount = fields.Float(string='Discount amount', default="0.0")
-    total_discount = fields.Float(string='Discount')
+    total_discount = fields.Monetary(string='Discount', compute="_get_discount")
     
-    @api.depends('discount_method'):
-        def _get_discount(self):
-            total_discount = 0.0
-            if self.discount_method == 'fixed':
-                total_discount = self.discount_amount
-            elif self.discount_method = 'percentage':
-                total_discount = self.amount_total * self.discount_amount / 100
-            return total_discount
+    @api.depends('discount_method')
+    def _get_discount(self):
+        total_discount = 0.0
+        if self.discount_method == 'fixed':
+            total_discount = self.discount_amount
+        elif self.discount_method == 'percentage':
+            total_discount = self.amount_total * self.discount_amount / 100
+        return total_discount
         
     
     @api.depends('order_line.price_total')
@@ -37,15 +37,15 @@ class sale_order_discount(models.Model):
         Compute the total discount of the SO.
         """
         for order in self:
-            amount_untaxed = amount_tax = total_discount 0.0
+            amount_untaxed = amount_tax = 0.0
             for line in order.order_line:
                 amount_untaxed += line.price_subtotal
                 amount_tax += line.price_tax
             order.update({
-                'total_discount': _get_discount(),
+                'total_discount': self._get_discount(),
                 'amount_untaxed': amount_untaxed,
                 'amount_tax': amount_tax,
-                'amount_total': amount_untaxed + amount_tax - _get_discount(),
+                'amount_total': amount_untaxed + amount_tax - self._get_discount(),
             })
 
     
