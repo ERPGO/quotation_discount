@@ -42,7 +42,7 @@ class SaleOrderInherit(models.Model):
         Compute the total discount of the SO.
         """
         for order in self:
-            amount_untaxed = amount_tax = amount_price = total_discount = total = 0.0
+            amount_untaxed = amount_tax = total_discount = total = 0.0
             for line in order.order_line:
                 total += round((line.product_uom_qty * line.price_unit))
                 amount_untaxed += line.price_subtotal
@@ -65,7 +65,7 @@ class SaleOrderInherit(models.Model):
                 for line in order.order_line:
                     line.discount = order.discount_amount
             else:
-                total = discount = 0.0
+                total = 0.0
                 for line in order.order_line:
                     total += round((line.product_uom_qty * line.price_unit))
                 if order.discount_amount != 0 and total > 0:
@@ -99,7 +99,7 @@ class AccountInvoiceDiscount(models.Model):
     def _compute_amount( self ):
         round_curr = self.currency_id.round
         for inv in self:
-            amount_untaxed = amount_tax = amount_price = total_discount = total = 0.0
+            amount_untaxed = total_discount = total = 0.0
             for line in inv.invoice_line_ids:
                 amount_untaxed += line.price_subtotal
                 total += round((line.quantity * line.price_unit))
@@ -131,7 +131,7 @@ class AccountInvoiceDiscount(models.Model):
                 for line in inv.invoice_line_ids:
                     line.discount = inv.discount_amount
             else:
-                total = discount = 0.0
+                total = 0.0
                 for line in inv.invoice_line_ids:
                     total += round((line.quantity * line.price_unit))
                 if inv.discount_amount != 0 and total > 0:
