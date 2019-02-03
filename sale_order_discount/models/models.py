@@ -3,6 +3,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
 # class sale_order_discount(models.Model):
 #     _name = 'sale_order_discount.sale_order_discount'
 
@@ -17,11 +18,15 @@ from odoo.exceptions import ValidationError
 
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
-    
-    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, default='fixed')
-    discount_amount = fields.Float(string='Discount amount', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, default="0.0")
-    total_discount = fields.Monetary(string='Discount', readonly=True, compute="_amount_all", 
-                                     track_visibility='always')    
+
+    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True,
+                                       states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+                                       default='fixed')
+    discount_amount = fields.Float(string='Discount amount', readonly=True,
+                                   states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+                                   default="0.0")
+    total_discount = fields.Monetary(string='Discount', readonly=True, compute="_amount_all",
+                                     track_visibility='always')
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
                                      track_visibility='always')
     amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all',
@@ -29,10 +34,10 @@ class SaleOrderInherit(models.Model):
     amount_total = fields.Monetary(string='Total', store=False, readonly=True, compute='_amount_all',
                                    track_visibility='always')
     total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all',
-                                   track_visibility='always')
+                                       track_visibility='always')
 
     @api.onchange('order_line.price_total')
-    def _amount_all(self):
+    def _amount_all( self ):
         """
         Compute the total discount of the SO.
         """
@@ -50,9 +55,9 @@ class SaleOrderInherit(models.Model):
                 'amount_tax': order.pricelist_id.currency_id.round(amount_tax),
                 'amount_total': amount_untaxed + amount_tax
             })
-                
+
     @api.onchange('discount_method', 'discount_amount', 'order_line')
-    def supply_rate(self):
+    def supply_rate( self ):
         for order in self:
             if order.discount_method == 'percentage':
                 if order.discount_amount > 100 or order.discount_amount < 0:
@@ -70,29 +75,28 @@ class SaleOrderInherit(models.Model):
                 for line in order.order_line:
                     line.discount = discount
 
-                
     @api.multi
-    def _prepare_invoice(self,):
+    def _prepare_invoice( self, ):
         invoice_vals = super(SaleOrderInherit, self)._prepare_invoice()
         invoice_vals.update({
             'discount_method': self.discount_method,
             'discount_amount': self.discount_amount
         })
         return invoice_vals
-    
+
     @api.multi
-    def button_dummy(self):
+    def button_dummy( self ):
         self.supply_rate()
         return True
 
 
 class AccountInvoiceDiscount(models.Model):
     _inherit = 'account.invoice'
-    
+
     @api.one
     @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount', 'tax_line_ids.amount_rounding',
                  'currency_id', 'company_id', 'date_invoice', 'type', 'discount_amount', 'discount_method')
-    def _compute_amount(self):
+    def _compute_amount( self ):
         round_curr = self.currency_id.round
         for inv in self:
             amount_untaxed = amount_tax = amount_price = total_discount = total = 0.0
@@ -117,9 +121,9 @@ class AccountInvoiceDiscount(models.Model):
         self.amount_total_company_signed = amount_total_company_signed * sign
         self.amount_total_signed = self.amount_total * sign
         self.amount_untaxed_signed = amount_untaxed_signed * sign
-        
+
     @api.onchange('discount_method', 'discount_amount', 'invoice_line_ids')
-    def supply_rate(self):
+    def supply_rate( self ):
         for inv in self:
             if inv.discount_method == 'percentage':
                 if inv.discount_amount > 100 or inv.discount_amount < 0:
@@ -136,30 +140,36 @@ class AccountInvoiceDiscount(models.Model):
                     discount = inv.discount_amount
                 for line in inv.invoice_line_ids:
                     line.discount = discount
-                    
+
     @api.multi
-    def button_dummy(self):
+    def button_dummy( self ):
         self.supply_rate()
         return True
 
-
-    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, default='fixed')
-    discount_amount = fields.Float(string='Discount amount', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, default="0.0")
-    total_discount = fields.Monetary(string='Discount', store=False, compute="_compute_amount", track_visibility='always')
+    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True,
+                                       states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+                                       default='fixed')
+    discount_amount = fields.Float(string='Discount amount', readonly=True,
+                                   states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+                                   default="0.0")
+    total_discount = fields.Monetary(string='Discount', store=False, compute="_compute_amount",
+                                     track_visibility='always')
     total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_compute_amount',
-                                   track_visibility='always')
-    
-    amount_untaxed = fields.Monetary(string='Untaxed Amount',
-        store=True, readonly=True, compute='_compute_amount', track_visibility='always')
-    amount_untaxed_signed = fields.Monetary(string='Untaxed Amount in Company Currency', currency_field='company_currency_id',
-        store=True, readonly=True, compute='_compute_amount')
-    amount_tax = fields.Monetary(string='Tax',
-        store=True, readonly=True, compute='_compute_amount')
-    amount_total = fields.Monetary(string='Total',
-        store=False, readonly=True, compute='_compute_amount')
-    amount_total_signed = fields.Monetary(string='Total in Invoice Currency', currency_field='currency_id',
-        store=False, readonly=True, compute='_compute_amount',
-        help="Total amount in the currency of the invoice, negative for credit notes.")
-    amount_total_company_signed = fields.Monetary(string='Total in Company Currency', currency_field='company_currency_id', store=True, readonly=True, compute='_compute_amount',
-        help="Total amount in the currency of the company, negative for credit notes.")
+                                       track_visibility='always')
 
+    amount_untaxed = fields.Monetary(string='Untaxed Amount',
+                                     store=True, readonly=True, compute='_compute_amount', track_visibility='always')
+    amount_untaxed_signed = fields.Monetary(string='Untaxed Amount in Company Currency',
+                                            currency_field='company_currency_id',
+                                            store=True, readonly=True, compute='_compute_amount')
+    amount_tax = fields.Monetary(string='Tax',
+                                 store=True, readonly=True, compute='_compute_amount')
+    amount_total = fields.Monetary(string='Total',
+                                   store=False, readonly=True, compute='_compute_amount')
+    amount_total_signed = fields.Monetary(string='Total in Invoice Currency', currency_field='currency_id',
+                                          store=False, readonly=True, compute='_compute_amount',
+                                          help="Total amount in the currency of the invoice, negative for credit notes.")
+    amount_total_company_signed = fields.Monetary(string='Total in Company Currency',
+                                                  currency_field='company_currency_id', store=True, readonly=True,
+                                                  compute='_compute_amount',
+                                                  help="Total amount in the currency of the company, negative for credit notes.")
