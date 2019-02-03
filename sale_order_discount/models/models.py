@@ -17,8 +17,8 @@ from odoo import models, fields, api
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
     
-    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], default='fixed')
-    discount_amount = fields.Float(string='Discount amount', default="0.0")
+    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, default='fixed')
+    discount_amount = fields.Float(string='Discount amount', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, default="0.0")
     total_discount = fields.Monetary(string='Discount', compute="_amount_all")            
     amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
                                      track_visibility='always')
@@ -83,8 +83,8 @@ class AccountInvoiceDiscount(models.Model):
         self.amount_total_signed = self.amount_total * sign
         self.amount_untaxed_signed = amount_untaxed_signed * sign
 
-    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], default='fixed')
-    discount_amount = fields.Float(string='Discount amount', default="0.0")
+    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, default='fixed')
+    discount_amount = fields.Float(string='Discount amount', readonly=True, states={'draft': [('readonly', False)], 'sent': [('readonly', False)]}, default="0.0")
     total_discount = fields.Monetary(string='Discount', compute="_compute_amount")            
     amount_untaxed = fields.Monetary(string='Untaxed Amount',
         store=True, readonly=True, compute='_compute_amount', track_visibility='always')

@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <record id="discount_sale_view_form" model="ir.ui.view">
+            <field name="name">discount.sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+            <data>
+                <xpath expr="//group[@name='sale_total']" position="after">
+                    <group class="oe_subtotal_footer oe_left" name="Discount details">
+                        <field name="discount_method"/>
+                        <field name="discount_amount"/>
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='amount_tax']" position="after">
+                    <field name="total_discount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                </xpath>
+            </data>
+            </field>
+        </record>
+    </data>
+</odoo>
