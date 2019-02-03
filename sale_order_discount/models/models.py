@@ -19,6 +19,8 @@ from odoo.exceptions import ValidationError
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
 
+    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all',
+                                       track_visibility='always')
     discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True,
                                        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                        default='fixed')
@@ -33,8 +35,6 @@ class SaleOrderInherit(models.Model):
                                  track_visibility='always')
     amount_total = fields.Monetary(string='Total', store=False, readonly=True, compute='_amount_all',
                                    track_visibility='always')
-    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all',
-                                       track_visibility='always')
 
     @api.onchange('order_line.price_total')
     def _amount_all( self ):
