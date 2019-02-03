@@ -33,7 +33,8 @@ class SaleOrderInherit(models.Model):
                                  track_visibility='always')
     amount_total = fields.Monetary(string='Total', store=False, readonly=True, compute='_amount_all',
                                    track_visibility='always')
-    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all', track_visibility='always')
+    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all',
+                                       track_visibility='always')
 
     @api.onchange('order_line.price_total')
     def _amount_all( self ):
