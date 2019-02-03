@@ -154,8 +154,7 @@ class AccountInvoiceDiscount(models.Model):
     total_discount = fields.Monetary(string='Discount', store=False, compute="_compute_amount",
                                      track_visibility='always')
 
-    total_unit_price = fields.Monetary(string='Sub Total', readonly=True, compute='_compute_amount'
-                                       )
+    total_unit_price = fields.Monetary(string='Sub Total', readonly=True, compute='_compute_amount')
 
     amount_untaxed = fields.Monetary(string='Untaxed Amount',
                                      store=True, readonly=True, compute='_compute_amount', track_visibility='always')
