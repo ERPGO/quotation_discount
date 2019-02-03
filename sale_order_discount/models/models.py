@@ -18,23 +18,6 @@ from odoo.exceptions import ValidationError
 
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
-    total_unit_price = fields.Float(string='testpricetotal')
-    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all',
-                                       track_visibility='always')
-    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True,
-                                       states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-                                       default='fixed')
-    discount_amount = fields.Float(string='Discount amount', readonly=True,
-                                   states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
-                                   default="0.0")
-    total_discount = fields.Monetary(string='Discount', readonly=True, compute="_amount_all",
-                                     track_visibility='always')
-    amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
-                                     track_visibility='always')
-    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all',
-                                 track_visibility='always')
-    amount_total = fields.Monetary(string='Total', store=False, readonly=True, compute='_amount_all',
-                                   track_visibility='always')
 
     @api.onchange('order_line.price_total')
     def _amount_all( self ):
@@ -88,6 +71,23 @@ class SaleOrderInherit(models.Model):
     def button_dummy( self ):
         self.supply_rate()
         return True
+
+    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all',
+                                       track_visibility='always')
+    discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True,
+                                       states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+                                       default='fixed')
+    discount_amount = fields.Float(string='Discount amount', readonly=True,
+                                   states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
+                                   default="0.0")
+    total_discount = fields.Monetary(string='Discount', readonly=True, compute="_amount_all",
+                                     track_visibility='always')
+    amount_untaxed = fields.Monetary(string='Untaxed Amount', store=True, readonly=True, compute='_amount_all',
+                                     track_visibility='always')
+    amount_tax = fields.Monetary(string='Taxes', store=True, readonly=True, compute='_amount_all',
+                                 track_visibility='always')
+    amount_total = fields.Monetary(string='Total', store=False, readonly=True, compute='_amount_all',
+                                   track_visibility='always')
 
 
 class AccountInvoiceDiscount(models.Model):
