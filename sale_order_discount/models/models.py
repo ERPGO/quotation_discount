@@ -19,7 +19,7 @@ from odoo.exceptions import ValidationError
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
 
-    @api.onchange('order_line.price_total')
+    @api.depends('order_line.price_total')
     def _amount_all( self ):
         """
         Compute the total discount of the SO.
