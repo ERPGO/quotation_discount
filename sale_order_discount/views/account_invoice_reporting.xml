@@ -8,7 +8,7 @@
                     <td>Discount</td>
                     <td class="text-right">
                         <span t-field="o.total_discount"
-                            t-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                              t-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
                     </td>
                 </tr>
             </xpath>

@@ -5,27 +5,28 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
-            <data>
-                <xpath expr="//field[@name='comment']" position="before">
-                    <div>
-                        <label for="discount_method" string="Discount Type :"/>
-                        <field name="discount_method" class="oe_inline"/>
-                    </div>
-                    <div>
-                        <label for="discount_amount" string="Discount Amount :"/>
-                        <field name="discount_amount" class="oe_inline"/>
-                        <div class="oe_subtotal_footer_separator oe_inline">
+                <data>
+                    <xpath expr="//field[@name='comment']" position="before">
+                        <div>
+                            <label for="discount_method" string="Discount Type :"/>
+                            <field name="discount_method" class="oe_inline"/>
+                        </div>
+                        <div>
+                            <label for="discount_amount" string="Discount Amount :"/>
+                            <field name="discount_amount" class="oe_inline"/>
+                            <div class="oe_subtotal_footer_separator oe_inline">
                                 <button name="button_dummy"
-                                        states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                                        states="draft,sent" string="(update)" type="object"
+                                        class="oe_edit_only oe_link"/>
                             </div>
 
-                    </div>
-                </xpath>
-                <xpath expr="//field[@name='amount_untaxed']" position="before">
-                    <field name="total_unit_price"/>
-                    <field name="total_discount"/>
-                </xpath>
-            </data>
+                        </div>
+                    </xpath>
+                    <xpath expr="//field[@name='amount_untaxed']" position="before">
+                        <field name="total_unit_price"/>
+                        <field name="total_discount"/>
+                    </xpath>
+                </data>
             </field>
         </record>
     </data>
