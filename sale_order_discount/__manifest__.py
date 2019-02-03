@@ -26,6 +26,10 @@
         # 'security/ir.model.access.csv',
         #'views/views.xml',
         #'views/templates.xml',
+        'views/sale_order.xml',
+        'views/account_invoice.xml',
+        'views/account_invoice_reporting.xml',
+        'views/sale_order_reporting.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
