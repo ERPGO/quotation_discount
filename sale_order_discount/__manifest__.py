@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "sale_order_discount",
+    'name': "Total Discount on SO",
 
     'summary': """
         Total discounts on quotations""",
