@@ -18,7 +18,7 @@ from odoo.exceptions import ValidationError
 
 class SaleOrderInherit(models.Model):
     _inherit = 'sale.order'
-
+    total_unit_price = fields.Float(string='testpricetotal')
     total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all',
                                        track_visibility='always')
     discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True,
