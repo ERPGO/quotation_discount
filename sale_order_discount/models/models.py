@@ -72,8 +72,7 @@ class SaleOrderInherit(models.Model):
         self.supply_rate()
         return True
 
-    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all',
-                                       track_visibility='always')
+    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_amount_all')
     discount_method = fields.Selection([('fixed', 'Fixed'), ('percentage', 'Percentage')], readonly=True,
                                        states={'draft': [('readonly', False)], 'sent': [('readonly', False)]},
                                        default='fixed')
@@ -154,8 +153,8 @@ class AccountInvoiceDiscount(models.Model):
                                    default="0.0")
     total_discount = fields.Monetary(string='Discount', store=False, compute="_compute_amount",
                                      track_visibility='always')
-    total_unit_price = fields.Monetary(string='Sub Total', store=False, readonly=True, compute='_compute_amount',
-                                       track_visibility='always')
+
+    total_unit_price = fields.Monetary(string='Sub Total', readonly=True, compute='_compute_amount')
 
     amount_untaxed = fields.Monetary(string='Untaxed Amount',
                                      store=True, readonly=True, compute='_compute_amount', track_visibility='always')
