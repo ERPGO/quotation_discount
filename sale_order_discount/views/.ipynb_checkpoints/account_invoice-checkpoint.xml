@@ -1,6 +1,5 @@
 <odoo>
     <data>
-
         <record id="discount_account_invoice_view_form" model="ir.ui.view">
             <field name="name">discount.account.invoice</field>
             <field name="model">account.invoice</field>
@@ -8,13 +7,23 @@
             <field name="arch" type="xml">
             <data>
                 <xpath expr="//field[@name='comment']" position="before">
-                    <group class="oe_subtotal_footer oe_left" name="Discount details">
-                        <field name="discount_method"/>
-                        <field name="discount_amount"/>
-                    </group>
+                    <div>
+                        <label for="discount_method" string="Discount Type :"/>
+                        <field name="discount_method" class="oe_inline"/>
+                    </div>
+                    <div>
+                        <label for="discount_amount" string="Discount Amount :"/>
+                        <field name="discount_amount" class="oe_inline"/>
+                        <div class="oe_subtotal_footer_separator oe_inline">
+                                <button name="button_dummy"
+                                        states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                            </div>
+
+                    </div>
                 </xpath>
-                <xpath expr="//field[@name='amount_tax']" positiion="after">
-                    <field name="total_discount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <xpath expr="//field[@name='amount_untaxed']" position="before">
+                    <field name="total_unit_price"/>
+                    <field name="total_discount"/>
                 </xpath>
             </data>
             </field>
