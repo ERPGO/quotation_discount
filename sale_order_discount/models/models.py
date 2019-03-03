@@ -2,6 +2,7 @@
 
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+import odoo.addons.decimal_precision as dp
 
 
 # class sale_order_discount(models.Model):
